@@ -33,7 +33,7 @@ public class Move {
 				return prprty;
 			}
 		}
-		System.err.println(name + " is an invalid Property");
+//		System.err.println(name + " is an invalid Property");
 		return null;
 	}
 	

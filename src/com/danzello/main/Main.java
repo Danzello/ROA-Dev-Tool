@@ -263,6 +263,9 @@ public class Main extends Application{
 		
 		TextField search_txtF = new TextField();
 		search_txtF.setPrefWidth(200);
+		search_txtF.setOnAction(e -> {
+			propertyEditor_tbl.setItems(FXCollections.observableArrayList(character.getMove(moveNav_lstV.getSelectionModel().getSelectedIndex()).filter(search_txtF.getText())));
+		});
 		
 		Button search_btn = new Button("Search");
 		search_btn.setOnAction(e ->{
@@ -285,8 +288,10 @@ public class Main extends Application{
 		Button addHitBox_btn = new Button("Add Hitbox");
 		addHitBox_btn.setPrefWidth(100);
 		addHitBox_btn.setOnAction(e -> {
-			saved.setValue((HitboxWindow.display(moveNav_lstV.getSelectionModel().getSelectedItem(), primaryStage) ? saved.getValue() : false));
-			propertyEditor_tbl.setItems(FXCollections.observableArrayList(moveNav_lstV.getSelectionModel().getSelectedItem().getProperties()));
+			if(moveNav_lstV.getSelectionModel().getSelectedItem().getProperty("num_hitboxes") != null){
+				saved.setValue((HitboxWindow.display(moveNav_lstV.getSelectionModel().getSelectedItem(), primaryStage) ? saved.getValue() : false));
+				propertyEditor_tbl.setItems(FXCollections.observableArrayList(moveNav_lstV.getSelectionModel().getSelectedItem().getProperties()));
+			}
 		});
         
 		nav.getChildren().addAll(back_btn, addHitBox_btn, saveIndicator_lbl, space, search_txtF, search_btn, space2, save_btn);
@@ -295,8 +300,10 @@ public class Main extends Application{
             @Override
             public void changed(ObservableValue<? extends Move> observable, Move oldValue, Move newValue) {
             	//System.out.print("observable: "+ observable +"\noldValue: "+ oldValue +"\nnewValue: "+ newValue+"\n\n");
-            	if(newValue != null)
+            	if(newValue != null){
+            		propertyEditor_tbl.scrollTo(0);
             		propertyEditor_tbl.setItems(FXCollections.observableArrayList(newValue.getProperties()));
+            	}
             }
         });
         
