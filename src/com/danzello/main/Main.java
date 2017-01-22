@@ -55,7 +55,6 @@ import com.danzello.main.windows.HitboxWindow;
 
 public class Main extends Application{
 
-	//C:\Users\dan9z_000\AppData\Local\RivalsofAether\dev_mode\dev_ver_0.3\active
 	
 	private static final String version = "1.0";
 	private static String directory;
@@ -218,7 +217,6 @@ public class Main extends Application{
 		});
 		
 		VBox charcterButtons = new VBox(5);
-		//grid.setAlignment(Pos.CENTER);
 		charcterButtons.getChildren().addAll(zetter_btn, fors_btn, wrastor_btn, absa_btn, maypul_btn, kragg_btn, orcane_btn, etalus_btn, general_btn);
 		
 		Region gap4 = new Region();
@@ -311,7 +309,6 @@ public class Main extends Application{
         moveNav_lstV.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Move>() {
             @Override
             public void changed(ObservableValue<? extends Move> observable, Move oldValue, Move newValue) {
-            	//System.out.print("observable: "+ observable +"\noldValue: "+ oldValue +"\nnewValue: "+ newValue+"\n\n");
             	if(newValue != null){
             		propertyEditor_tbl.scrollTo(0);
             		propertyEditor_tbl.setItems(FXCollections.observableArrayList(newValue.getProperties()));
@@ -398,22 +395,6 @@ public class Main extends Application{
 			propertyEditor_tbl.edit(-1, null);
         });
 		
-//		propertyEditor_tbl.setRowFactory(new Callback<TableView<Property>, TableRow<Property>>(){
-//
-//			@Override
-//			public TableRow<Property> call(TableView<Property> param) {
-//				TableRow<Property> row = new TableRow<Property>(){
-//					protected void updateItem(Property t, boolean bln) {
-//						super.updateItem(t, bln);
-//						System.out.println(getText());
-//						if(t != null)
-//							setText("hello");
-//					}
-//				};
-//				return row;
-//			}
-//			
-//		});
 		
 		propertyEditor_tbl.getColumns().addAll(name_clm, value_clm);
 		
@@ -424,16 +405,6 @@ public class Main extends Application{
 		borderPane.setTop(nav);
 		
 		scene3 = new Scene(borderPane, 700, 700);
-//		scene3.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>(){
-//			@Override
-//			public void handle(WindowEvent event) {
-//				if(!saved){
-//					if(ConfirmSaveWindow.display(primaryStage)){
-//						save(directory, character);
-//					}
-//				}
-//			}
-//		});
 		
 ///////////////////////////////////////////////////////////////////////////////////////////////////////		
 		
