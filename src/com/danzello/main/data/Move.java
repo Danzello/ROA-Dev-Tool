@@ -24,7 +24,7 @@ public class Move {
 				return;
 			}
 		}
-		System.out.println(element + "-------------------------------------------");
+		System.err.println(element);
 	}
 	
 	public MoveProperty getProperty(String name){
@@ -33,7 +33,7 @@ public class Move {
 				return prprty;
 			}
 		}
-//		System.err.println(name + " is an invalid Property");
+		System.err.println(name);
 		return null;
 	}
 	
@@ -51,6 +51,16 @@ public class Move {
 	
 	public MoveProperty getProperty(int index){
 		return properties.get(index);
+	}
+	
+	public int getIndex(String name){
+		for(int i = 0; i < properties.size(); i++){
+			if(properties.get(i).name.equals(name)){
+				return i;
+			}
+		}
+		System.err.println(name);
+		return -1;
 	}
 	
 	public void setProperties(List<MoveProperty> properties2){

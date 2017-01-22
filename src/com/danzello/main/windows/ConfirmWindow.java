@@ -3,35 +3,43 @@ package com.danzello.main.windows;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ConfirmSaveWindow {
+public class ConfirmWindow {
 	
-	private static boolean answer;
+	private static int answer;
 	
-	public static boolean display(Stage owner){
+	public static int display(String message, Stage owner){
 		
 		Stage window = new Stage();
 		window.initModality(Modality.APPLICATION_MODAL);
 		window.initOwner(owner);
 		
-		Label prompt_lbl = new Label("You didn't save changes! Would you like to save them?");
+		Text prompt_lbl = new Text(message);
+		prompt_lbl.setWrappingWidth(325);
+		prompt_lbl.setTextAlignment(TextAlignment.CENTER);
 		
-		Button accept_btn = new Button("Save");
+		Button accept_btn = new Button("Yes");
 		accept_btn.setPrefSize(100, 25);
 		accept_btn.setOnAction(e -> {
-			answer = true;
+			answer = 1;
 			window.close();
 		});
-		Button decline_btn = new Button("Don't Save");
+		Button decline_btn = new Button("No");
 		decline_btn.setPrefSize(100, 25);
 		decline_btn.setOnAction(e -> {
-			answer = false;
+			answer = 2;
 			window.close();
+		});
+		
+		window.setOnCloseRequest(e -> {
+			answer = 0;
+			//window.close();
 		});
 		
 		HBox buttons = new HBox(20);
@@ -46,7 +54,7 @@ public class ConfirmSaveWindow {
 		
 		window.setResizable(false);
 		window.setScene(scene);
-		window.setTitle("Unsaved Changes");
+		window.setTitle("Hold On!");
 		window.showAndWait();
 		
 		return answer;

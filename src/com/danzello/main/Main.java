@@ -31,6 +31,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -45,8 +46,9 @@ import javafx.util.StringConverter;
 import com.danzello.main.data.CharacterModel;
 import com.danzello.main.data.Move;
 import com.danzello.main.data.MoveProperty;
+import com.danzello.main.utils.FileResults;
 import com.danzello.main.windows.AlertWindow;
-import com.danzello.main.windows.ConfirmSaveWindow;
+import com.danzello.main.windows.ConfirmWindow;
 import com.danzello.main.windows.HitboxWindow;
 
 
@@ -246,16 +248,26 @@ public class Main extends Application{
 		back_btn.setPrefWidth(50);
 		back_btn.setOnAction(e -> {
 			if(!saved.getValue()){
-				if(ConfirmSaveWindow.display(primaryStage)){
-					save(directory, character);
+				int returnedNum = ConfirmWindow.display("You didn't save changes, would you you like to save them?",primaryStage);
+				if(returnedNum != 0){
+					if(returnedNum == 1)
+						save(directory, character);
+					primaryStage.setScene(scene2);
+					myObservableList.clear();
+					propertyEditor_tbl.getItems().clear();
+					moveNav_lstV.getItems().clear();
+					character = null;
+					saved.setValue(true);
 				}
+			}else{
+				primaryStage.setScene(scene2);
+				myObservableList.clear();
+				propertyEditor_tbl.getItems().clear();
+				moveNav_lstV.getItems().clear();
+				character = null;
+				saved.setValue(true);
 			}
-			primaryStage.setScene(scene2);
-			myObservableList.clear();
-			propertyEditor_tbl.getItems().clear();
-			moveNav_lstV.getItems().clear();
-			character = null;
-			saved.setValue(true);
+			
 		});
 		
 		Region space = new Region();
@@ -328,12 +340,6 @@ public class Main extends Application{
             }
         });
         
-        
-        
-		
-        
-		
-		
 		
 		TableColumn<MoveProperty, String> name_clm = new TableColumn<MoveProperty, String>("Name");
 		name_clm.setCellValueFactory(new PropertyValueFactory<MoveProperty, String>("name"));
@@ -386,6 +392,11 @@ public class Main extends Application{
 	        }
 
 	    });
+		propertyEditor_tbl.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
+			propertyEditor_tbl.refresh();
+
+			propertyEditor_tbl.edit(-1, null);
+        });
 		
 //		propertyEditor_tbl.setRowFactory(new Callback<TableView<Property>, TableRow<Property>>(){
 //
@@ -431,8 +442,16 @@ public class Main extends Application{
 			public void handle(WindowEvent event) {
 				if(primaryStage.getScene() == scene3){
 					if(!saved.getValue()){
-						if(ConfirmSaveWindow.display(primaryStage)){
-							save(directory, character);
+						int returnedNum = ConfirmWindow.display("You didn't save changes, would you you like to save them?" ,primaryStage);
+						if(returnedNum != 0){
+							if(returnedNum == 1)
+								save(directory, character);
+							primaryStage.setScene(scene2);
+							myObservableList.clear();
+							propertyEditor_tbl.getItems().clear();
+							moveNav_lstV.getItems().clear();
+							character = null;
+							saved.setValue(true);
 						}
 					}
 				}
@@ -472,19 +491,17 @@ public class Main extends Application{
 	}
 	
 	private static void loadAndAdvance(byte chara, ObservableList<Move> myObservableList, ListView<Move> moveNav_lstV, Stage stage){
-		try{
-			character = getCharacterFromFile(directory, chara);
-			if(character != null){
-				myObservableList.setAll(character.getMoves());
-				moveNav_lstV.setItems(myObservableList);
-				moveNav_lstV.getSelectionModel().select(0);
-				stage.setScene(scene3);
-			}else{
-				AlertWindow.display("Something is syntactically incorrect with " + getFileName(chara) + ": a weird character is placed at the start of a line", stage);
-			}
-		}catch(ArrayIndexOutOfBoundsException e){
-			AlertWindow.display("Something is syntactically incorrect with " + getFileName(chara) + ": there is a missing \"=\" somewhere", stage);
+		FileResults results = getCharacterFromFile(directory, chara);
+		if(results.getModel() != null){
+			character = results.getModel();
+			myObservableList.setAll(character.getMoves());
+			moveNav_lstV.setItems(myObservableList);
+			moveNav_lstV.getSelectionModel().select(0);
+			stage.setScene(scene3);
+		}else if(results.getLineError() != 0){
+			AlertWindow.display("There is a typo in " + getFileName(chara) + " at Line "+ results.getLineError() +". It could be a missing character or a character that shouldn't be there", stage);
 		}
 	}
+
 
 }

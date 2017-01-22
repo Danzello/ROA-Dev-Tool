@@ -37,8 +37,9 @@ public class FileReadWriter {
 		"custom_zetterburn.ini"
 	};
 	
-	public static CharacterModel getCharacterFromFile(String directory, byte fileIndex){
+	public static FileResults getCharacterFromFile(String directory, byte fileIndex){
 		FileReader fr = null;
+		int lineNumber = 0;
 		
 		try {
 			fr = new FileReader(directory + File.separatorChar + files[fileIndex]);
@@ -53,6 +54,7 @@ public class FileReadWriter {
 			String line;
 			Move move = null;
 			while((line = reader.readLine()) != null){
+				lineNumber++;
 				if(line.startsWith("[")){
 					move = new Move(line);
 					character.addMove(move);
@@ -62,15 +64,16 @@ public class FileReadWriter {
 					
 					move.addProperty(new MoveProperty(subStrings[0], Float.parseFloat(value)));
 				}else{
-					return null;
+					return new FileResults(null, lineNumber);
 				}
 			}
 			reader.close();
 		}catch(IOException e){
 			e.printStackTrace();
+		}catch(ArrayIndexOutOfBoundsException e){
+			return new FileResults(null, lineNumber);
 		}
-		
-		return character;
+		return new FileResults(character, 0);
 	}
 	
 	public static void save(String directory, CharacterModel chara){
