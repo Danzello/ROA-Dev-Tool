@@ -39,7 +39,6 @@ public class ConfirmWindow {
 		
 		window.setOnCloseRequest(e -> {
 			answer = 0;
-			//window.close();
 		});
 		
 		HBox buttons = new HBox(20);
